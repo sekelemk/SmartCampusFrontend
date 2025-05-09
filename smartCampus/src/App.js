@@ -14,7 +14,6 @@ import Adduser from './components/Adduser';
 import ViewTimetable from './components/viewTimetable';
 import StudentDashboard from './components/StudentDashboard';
 import StudentProfile from './components/StudentProfile';
-import Vaye from './components/vaye'; // Capitalized to use as a component
 
 import './styles.css';
 import {
@@ -56,8 +55,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Vaye />} />
-        <Route path='/LoginPage' element={<LoginPage />} />
+        
+        <Route path='/' element={<LoginPage />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/notifications' element={<Notifications />} />
