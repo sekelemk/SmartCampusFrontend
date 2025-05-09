@@ -56,8 +56,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/Vaye' element={<Vaye />} />
-        <Route path='/' element={<LoginPage />} />
+        <Route path='/' element={<Vaye />} />
+        <Route path='/LoginPage' element={<LoginPage />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/notifications' element={<Notifications />} />
