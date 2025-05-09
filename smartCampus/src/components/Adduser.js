@@ -13,34 +13,41 @@ const Adduser = () => {
     Subjects: [],
   });
 
-  const [showSubjects, setShowSubjects] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const isStudent = formData.Role === 'student';
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // If role is changed, reset subjects visibility
     if (name === 'Role') {
-      setShowSubjects(value === 'student');
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        Subjects: [],
-      }));
+      setFormData({
+        ...formData,
+        Role: value,
+        Subjects: value === 'student' ? formData.Subjects : [], // Clear subjects if not student
+      });
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const addSubject = () => {
-    if (newSubject.trim() !== '') {
+    const trimmed = newSubject.trim();
+    if (trimmed && !formData.Subjects.includes(trimmed)) {
       setFormData((prev) => ({
         ...prev,
-        Subjects: [...prev.Subjects, newSubject.trim()],
+        Subjects: [...prev.Subjects, trimmed],
       }));
       setNewSubject('');
+    }
+  };
+
+  const handleSubjectKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addSubject();
     }
   };
 
@@ -60,7 +67,6 @@ const Adduser = () => {
       const response = await api.post('/adduser', formData);
       setMessage(response.data.message);
       setFormData({ Fullname: '', email: '', password: '', Role: '', Subjects: [] });
-      setShowSubjects(false);
     } catch (err) {
       setError(err.response?.data?.error || 'Error adding user');
     }
@@ -105,7 +111,7 @@ const Adduser = () => {
           <option value="care taker">Care Taker</option>
         </select>
 
-        {showSubjects && (
+        {isStudent && (
           <div className="subjects-section">
             <label>Subjects (optional):</label>
             <div className="subject-input">
@@ -114,17 +120,20 @@ const Adduser = () => {
                 placeholder="Enter subject"
                 value={newSubject}
                 onChange={(e) => setNewSubject(e.target.value)}
+                onKeyDown={handleSubjectKeyDown}
               />
               <button type="button" onClick={addSubject}>Add</button>
             </div>
-            <ul className="subject-list">
-              {formData.Subjects.map((subject, index) => (
-                <li key={index}>
-                  {subject}
-                  <button type="button" onClick={() => removeSubject(index)}>x</button>
-                </li>
-              ))}
-            </ul>
+            {formData.Subjects.length > 0 && (
+              <ul className="subject-list">
+                {formData.Subjects.map((subject, index) => (
+                  <li key={index}>
+                    {subject}
+                    <button type="button" onClick={() => removeSubject(index)}>x</button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 
@@ -132,17 +141,13 @@ const Adduser = () => {
       </form>
 
       <div className="signup-link">
-        <p>Don't have an account? <Link to="/LoginPage">Sign in</Link></p>
+        <p>Already have an account? <Link to="/">Sign in</Link></p>
       </div>
 
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
-      
-     
-     
     </div>
-    
   );
 };
 
-export default Adduser;
+export default  Adduser;
